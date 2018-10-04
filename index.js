@@ -43,8 +43,8 @@ class Game {
       ai: {
         x: 100,
         y: 100,
-        width: 10,
-        height: 10,
+        width: 100,
+        height: 100,
         speed: 5,
         colour: 'red',
         render: () => {
@@ -221,11 +221,25 @@ class Game {
     }
   }
 
+  static detectCollision(a, b) {
+    // const aDimensions = [[a.x, a.y], [(a.x + a.width), a.y], [(a.x + a.width), (a.y + a.height)], [a.x, (a.x + a.width)]];
+    // const bDimensions = [[b.x, b.y], [(b.x + b.width), b.y], [(b.x + b.width), (b.y + b.height)], [b.x, (b.x + b.width)]];
+
+    return (a.x < b.x + b.width
+      && a.x + a.width > b.x
+      && a.y < b.y + b.height
+      && a.height + a.y > b.y);
+  }
+
   render() {
     this.clear();
 
     this.state.player.render();
     this.state.ai.render();
+
+    if (Game.detectCollision(this.state.player, this.state.ai)) {
+      console.log('YOU LOSE');
+    }
   }
 }
 
