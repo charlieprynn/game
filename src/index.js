@@ -1,4 +1,5 @@
 /* global document, window */
+import Player from './objects/Player';
 
 class Game {
   constructor() {
@@ -20,42 +21,19 @@ class Game {
         height: canvas.height,
         ctx: canvas.getContext('2d'),
       },
-      player: {
-        x: 0,
-        y: 0,
-        width: 10,
-        height: 10,
-        speed: 10,
-        colour: 'green',
-        render: () => {
-          const { player } = this.state;
-          const {
-            right, left, up, down,
-          } = this.state.controls;
+      player: new Player(10, 10, 10, 10, 10, 'green', () => {
+        const { player } = this.state;
+        const {
+          right, left, up, down,
+        } = this.state.controls;
 
-          this.movePlayer(right.active, left.active, up.active, down.active);
+        this.movePlayer(right.active, left.active, up.active, down.active);
 
-          this.state.canvas.ctx.fillStyle = player.colour;
+        this.state.canvas.ctx.fillStyle = player.colour;
 
-          this.state.canvas.ctx.fillRect(player.x, player.y, player.width, player.height);
-        },
-      },
-      ai: {
-        x: 100,
-        y: 100,
-        width: 100,
-        height: 100,
-        speed: 5,
-        colour: 'red',
-        render: () => {
-          const { ai } = this.state;
-
-          this.moveAi();
-
-          this.state.canvas.ctx.fillStyle = ai.colour;
-          this.state.canvas.ctx.fillRect(ai.x, ai.y, ai.width, ai.height);
-        },
-      },
+        this.state.canvas.ctx.fillRect(player.x, player.y, player.width, player.height);
+      }),
+      // ai: new Player(10, 10, 100, 100, 5, 'red'),
       controls: {
         left: {
           code: 37,
@@ -235,10 +213,16 @@ class Game {
     this.clear();
 
     this.state.player.render();
-    this.state.ai.render();
+    // this.state.ai.render();
 
     if (Game.detectCollision(this.state.player, this.state.ai)) {
-      console.log('YOU LOSE');
+      const { game } = this.state;
+
+      game.paused = true;
+
+      this.setState('game', game);
+
+      console.log('PAUSED AS DEAD');
     }
   }
 }
